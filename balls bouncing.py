@@ -171,6 +171,8 @@ class Ball:
         self.velocity.set_matrix(Va)
         ball.velocity.set_matrix(Vb)
 
+        system.collisions+=1
+
         
         
     
@@ -184,10 +186,10 @@ class Ball:
 
 class System:
     def __init__(self):
-        self.scale = 100 # Pixels per meter
+        self.scale = 10 # Pixels per meter
         self.grid_cell_size = 100 # cell size for grid algorithm
-        self.width = 10  ## meters
-        self.height = 8  ## meters
+        self.width = 100  ## meters
+        self.height = 80  ## meters
         
         self.width_pixels = self.width*self.scale
         self.height_pixels = self.height*self.scale
@@ -201,9 +203,11 @@ class System:
         self.wall_restitution = 1#0.5
         self.wall_friction = 0#0.3
 
-        self.circles = [Ball(self) for a in range(20)]
+        self.circles = [Ball(self) for a in range(500)]
 ##        self.circles = [Ball(self,0.5,7.5,1,0,0.5)]
 ##        self.circles = [Ball(self,2,4-1/(2**0.5),1,0,0.5),Ball(self,6,4,-2,0,0.5)]
+
+        self.collisions = 0
 
     def draw(self,screen):
         surf = pygame.Surface((self.width_pixels,self.height_pixels))
@@ -219,6 +223,7 @@ class System:
             c.draw(surf,self)
             system_energy+=c.energy
         ui.write(surf,5,5,str(int(system_energy))+'J',30,(15,15,15),False)
+        ui.write(surf,5,25,str(self.collisions)+' Collisions',30,(15,15,15),False)
 
         pygame.draw.rect(screen,(150,150,150),(self.x-self.border,self.y-self.border,self.width_pixels+self.border*2,self.height_pixels+self.border*2),self.border)
         screen.blit(surf,(self.x,self.y))
